@@ -15,16 +15,17 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Debug OIDC Context
+      - name: Verify GitHub OIDC Token
         run: |
-          echo "Repository: ${{ github.repository }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "Actor: ${{ github.actor }}"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL exists:"
+          echo $ACTIONS_ID_TOKEN_REQUEST_URL
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN exists:"
+          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
 
       - name: Configure AWS OIDC
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::294699500655:role/DevSecOps-Pipeline-Role
           aws-region: us-east-1
@@ -40,6 +41,6 @@ jobs:
         with:
           tfsec_args: --soft-fail=false
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
+          
       - name: Terraform Apply
         run: terraform apply -auto-approve
